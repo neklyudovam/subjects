@@ -1,0 +1,88 @@
+#include <iostream>
+#include <vector>
+
+using namespace std;
+
+// Структура узла дерева
+struct TreeNode {
+    int val;
+    TreeNode* left;
+    TreeNode* right;
+    TreeNode(int x) : val(x), left(nullptr), right(nullptr) {}
+};
+
+// Функция для вставки значения в дерево бинарного поиска
+TreeNode* insert(TreeNode* root, int value) {
+    if (root == nullptr) {
+        return new TreeNode(value);
+    }
+
+    if (value < root->val) {
+        root->left = insert(root->left, value);
+    }
+    else if (value > root->val) {
+        root->right = insert(root->right, value);
+    }
+
+    return root;
+}
+
+// Функция для поиска и вывода четных листьев
+void findEvenLeaves(TreeNode* root, vector<int>& evenLeaves) {
+    if (root == nullptr) {
+        return;
+    }
+
+    // Проверяем, является ли текущий узел листом (нет ни левого, ни правого ребенка)
+    if (root->left == nullptr && root->right == nullptr) {
+        // Проверяем, четное ли число
+        if (root->val % 2 == 0) {
+            evenLeaves.push_back(root->val);
+        }
+        return;
+    }
+
+    // Рекурсивно обходим левое и правое поддеревья
+    findEvenLeaves(root->left, evenLeaves);
+    findEvenLeaves(root->right, evenLeaves);
+}
+
+int main() {
+    setlocale(LC_ALL, "RUS");
+    vector<int> numbers;
+    int n;
+
+    cout << "Введите количество чисел: ";
+    cin >> n;
+
+    cout << "Введите числа через пробел: ";
+    for (int i = 0; i < n; i++) {
+        int num;
+        cin >> num;
+        numbers.push_back(num);
+    }
+
+    // Построение дерева бинарного поиска
+    TreeNode* root = nullptr;
+    for (int num : numbers) {
+        root = insert(root, num);
+    }
+
+    // Поиск четных листьев
+    vector<int> evenLeaves;
+    findEvenLeaves(root, evenLeaves);
+
+    // Вывод результатов
+    if (evenLeaves.empty()) {
+        cout << "Четных листьев нет" << endl;
+    }
+    else {
+        cout << "Четные листья: ";
+        for (int leaf : evenLeaves) {
+            cout << leaf << " ";
+        }
+        cout << endl;
+    }
+
+    return 0;
+}
